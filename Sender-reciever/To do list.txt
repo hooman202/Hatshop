@@ -1,0 +1,15 @@
+Sender:
+	* get the input from the user
+	* what functuality do we need ( group/single - reset - run the program - kill the program - go to sleep)
+
+Reciever:
+	* how to auto start
+	* multicast - borad cast
+	* reset
+	* run the program
+	* kill the program
+	* go to sleep
+
+
+* The address of the program would be c:
+* GUI would be pefrect
