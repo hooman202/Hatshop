@@ -1,58 +1,81 @@
 import socket
-import keyboard
 
-def send_message(message, host, port):
-    # Set up the sender socket
-    sender_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def send_broadcast_message(message, ip, port):
+    # Create a UDP socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
     try:
-        # Connect to the receiver
-        sender_socket.connect((host, port))
+        # Send the broadcast message
+        sock.sendto(message.encode('utf-8'), (ip, port))
+    finally:
+        # Close the socket
+        sock.close()
 
+def send_message(message, ip, port):
+    # Set up the sender socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+  #  sock = sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    try:
         # Send the message
-        sender_socket.send(message.encode())
+        sock.sendto(message.encode('utf-8'), (ip, port))
     finally:
         # Close the sender socket
-        sender_socket.close()
+        sock.close()
 
-def broadcast_message(message, broadcast_address, broadcast_port):
-    # Set up the socket for broadcasting
-    broadcast_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    broadcast_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    try:
-        # Send the message to the broadcast address and port
-        broadcast_socket.sendto(message.encode(), (broadcast_address, broadcast_port))
-    except Exception as e:
-        print("Error occurred while broadcasting the message:", e)
-    finally:
-        # Close the broadcast socket
-        broadcast_socket.close()
+ip = '192.168.128.109'  # IP address of the specific computer
+# broadcast_ip = '192.168.128.255' #ATC
+broadcast_ip = '10.229.40.255' #Kyoto University
+port = 12345
 
 # Usage example
 #message = "start_program"
 print("-----------------------------")
 print("1) Turn ON All PCs - not done")
-print("1) Restart All PCs - not done")
-print("2) Run All Skeleton.exe - not done")
-print("3) Kill All Skeleton.exe - not done")
-print("4) Turn off All PCs - not done")
-print("4) Turn ON All PCs - not done")
-print("5) Do it for one PC - not done")
-print("6 - Quit")
+print("2) Restart All PCs - not done")
+print("3) Start Skeleton.exe on All PCs - not done")
+print("4) Kill Skeleton.exe on All PCs - not done")
+print("5) Turn off All PCs - not done")
+print("6) Sleep All PCs - not done")
+print("7) Do it for one PC - not done")
+print("Q) - Quit")
 print("-----------------------------")
 while True: 
     input_command = input("Please enter the command: ")
     if(input_command == "1"):
         message = "turn_on"
-        broadcast_address = '10.229.40.255'  # Replace with the appropriate broadcast address
-        broadcast_port = 12345  # Replace with the desired port number
-        broadcast_message(message, broadcast_address, broadcast_port)
-        print("Message sent - Turning on all the PCs")
+        send_broadcast_message(message, broadcast_ip, port)
+        print("Message sent - Turning on all PCs")
     
-    if(input_command == "kill"):
-        message = "kill_program"
-        broadcast_address = '10.229.40.255'  # Replace with the appropriate broadcast address
-        broadcast_port = 12345  # Replace with the desired port number
-        send_message(message, '10.229.40.97', broadcast_port)
+    elif(input_command == "2"):
+        message = "reset"
+        send_broadcast_message(message, broadcast_ip, port)
+        print("Message sent - Restarting all PCs")
+    
+    elif(input_command == "3"):
+        message = "start_app"
+        send_broadcast_message(message, broadcast_ip, port)
+        print("Message sent - Starting Skeleton.exe on all PCs")
+
+    elif(input_command == "4"):
+        message = "kill_app"
+        send_broadcast_message(message, broadcast_ip, port)
+        print("Message sent - Killing Skeleton.exe on all PCs")
+
+    elif(input_command == "5"):
+        message = "turn_off"
+        send_broadcast_message(message, broadcast_ip, port)
+        print("Message sent - Turning off all PCs")
+
     elif(input_command == "6"):
+        message = "reset"
+        send_broadcast_message(message, broadcast_ip, port)
+        print("Message sent - Put all PCs to sleep")
+
+    elif(input_command == "7"):
+        print("Which PC do you like to Talk with - not done")
+        message = "start_app"
+        send_message(message, ip, port)
+
+    elif(input_command == "q" or 'Q'):
         break
