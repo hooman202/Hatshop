@@ -1,52 +1,47 @@
 import socket
 import subprocess
 import os
-
-# def start_receiver(receiver_port):
-#     # Set up the receiver socket
-#     receiver_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#     receiver_host = ''  # Listen on all available interfaces
-
-#     try:
-#         # Bind the socket to the host and port
-#         receiver_socket.bind((receiver_host, receiver_port))
-
-#         # Listen for incoming connections
-#         receiver_socket.listen(1)
-#         print("Receiver is listening on port", receiver_port)
-
-#         while True:
-#             # Accept the incoming connection
-#             connection, sender_address = receiver_socket.accept()
-#             print("Received a connection from:", sender_address)
-
-#             # Receive data
-#             data = connection.recv(1024).decode()
-#             print("Received:", data)
-
-#             # Check for a specific message
-            
-
-#             # Close the connection
-#             connection.close()
-#     finally:
-#         # Close the receiver socket
-#         receiver_socket.close()
-
-# def kill_program_by_file_name(file_name):
-#     # Check the platform (Windows or Linux/Mac)
-#     # Use taskkill command on Windows
-#     subprocess.run(['taskkill', '/f', '/im', file_name])
-
-
-
-
-
-
-
-import socket
+import ctypes
+import threading
+import time
 
 app_name = 'skeleton.exe'
+
+# For heartbeat
+broadcast_ip = '192.168.128.255'  # ATC
+heartbeat_port = 12346
+stop_heartbeat = False
+
+def send_broadcast_message(message, ip, port):
+    # Create a UDP socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
+    try:
+        # Send the broadcast message
+        sock.sendto(message.encode('utf-8'), (ip, port))
+    finally:
+        # Close the socket
+        sock.close()
+
+def get_computer_name():
+    hostname = socket.gethostname()
+    return hostname
+
+def send_heartbeat(port):
+    while not stop_heartbeat:
+        send_broadcast_message(get_computer_name(), broadcast_ip, port)
+        print("Sent message: I'm alive")
+        time.sleep(2)
+
+# Start the thread for sending the "I'm alive" message
+alive_thread = threading.Thread(target=send_heartbeat, args=(heartbeat_port,), daemon=True)
+alive_thread.start()
+
+# Define the necessary Windows API functions
+SetSuspendState = ctypes.windll.powrprof.SetSuspendState
+SetSuspendState.argtypes = (ctypes.c_int, ctypes.c_int, ctypes.c_int)
+SetSuspendState.restype = ctypes.c_uint
 
 def receive_message(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -60,16 +55,21 @@ def receive_message(port):
 port = 12345
 while True:
     message = receive_message(port)
+    print(message)
     if message == "start_app":
-        shortcut_path = r"C:/skeleton.lnk"
+        shortcut_path = r"C:/Hatshop/skeleton.lnk"
         subprocess.Popen(['start', shortcut_path], shell=True)
         print("Program executed.")
 
-    elif message=="kill_app":
+    elif message == "kill_app":
         subprocess.run(['taskkill', '/f', '/im', app_name])
 
-    elif message=='reset':
+    elif message == 'reset':
+        stop_heartbeat = True
         os.system("shutdown /r /t 0")
 
-            #elif data=="restart":
-            #elif data=="sleeo_mode":
+    elif message == 'sleep':
+        SetSuspendState(0, 0, 0)
+
+    elif message == 'turn_off':
+        os.system("shutdown /s /t 0")
