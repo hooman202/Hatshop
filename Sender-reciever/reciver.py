@@ -4,6 +4,7 @@ import os
 import ctypes
 import threading
 import time
+from datetime import datetime
 
 app_name = 'skeleton.exe'
 
@@ -55,7 +56,7 @@ def receive_message(port):
 port = 12345
 while True:
     message = receive_message(port)
-    print(message)
+    # print(message)
     if message == "start_app":
         shortcut_path = r"C:/Hatshop/skeleton.lnk"
         subprocess.Popen(['start', shortcut_path], shell=True)
@@ -69,7 +70,17 @@ while True:
         os.system("shutdown /r /t 0")
 
     elif message == 'sleep':
+        stop_heartbeat = True
         SetSuspendState(0, 0, 0)
 
     elif message == 'turn_off':
+        stop_heartbeat = True
         os.system("shutdown /s /t 0")
+
+    elif message=='record':
+        directory = "c:\Hatshop\Caliberation"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            print("Directory created:", directory)
+        # Define the command you want to run
+        command = r'"C:\Program Files\Azure Kinect SDK v1.4.1\tools\k4arecorder.exe" -l 1 "c:\Hatshop\{}-Caliberation-{}.mkv"'.format(os.environ["COMPUTERNAME"], datetime.now().strftime("%Y-%m-%d"))
