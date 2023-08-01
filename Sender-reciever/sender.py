@@ -1,8 +1,6 @@
 import tkinter as tk
 import socket
 import codecs
-import time
-import subprocess
 from multiprocessing import Pool
 import threading
 
@@ -12,6 +10,8 @@ root.title("Tenchou - てんちょう ")
 
 broadcast_ip = '192.168.128.255'
 port = 12345
+
+kinect_server_mac = '10-6f-3f-0e-1d-3e'
 
 mac_pc_dict = {
     'D4-93-90-20-92-D0': 'PC01',
@@ -54,6 +54,13 @@ def wake_on_lan(mac_address):
         sock.sendto(magic_packet, ('<broadcast>', 9))
 
 def on_button_click(command):
+    if command == "turn_on_server":
+        for i in range (20):
+            for mac_address, pc_name in mac_pc_dict.items():
+                wake_on_lan(kinect_server_mac)
+                # Debug Mode:
+                # print(f"Message sent - Waking up {pc_name} with MAC address {mac_address}")
+
     if command == "turn_on":
         for i in range (20):
             for mac_address, pc_name in mac_pc_dict.items():
@@ -147,21 +154,24 @@ def update_boxes():
         color = 'green' if status else 'red'
         boxes[idx].configure(bg=color)
 
-    root.after(2000, update_boxes)
+    root.after(3000, update_boxes)
     computer_status = [False] * len(mac_pc_dict)  # Reset computer_status to False
 
 
 # Start updating the PC boxes
 update_boxes()
 
-button_turn_on = tk.Button(root, text="Turn on", command=lambda: on_button_click("turn_on"), width=10)
+button_turn_on = tk.Button(root, text="Turn on", command=lambda: on_button_click("turn_on"), width=12)
 button_turn_on.grid(row=1, column=0, padx=10, pady=10)
 
-button_turn_off = tk.Button(root, text="Turn off", command=lambda: on_button_click("turn_off"), width=10)
+button_turn_off = tk.Button(root, text="Turn off", command=lambda: on_button_click("turn_off"), width=12)
 button_turn_off.grid(row=2, column=0, padx=10, pady=10)
 
-button_restart = tk.Button(root, text="Restart", command=lambda: on_button_click("restart"), width=10)
+button_restart = tk.Button(root, text="Restart", command=lambda: on_button_click("restart"), width=12)
 button_restart.grid(row=3, column=0, padx=10, pady=10)
+
+button_turn_on_server = tk.Button(root, text="Turn on Server", command=lambda: on_button_click("turn_on_server"), width=12)
+button_turn_on_server.grid(row=4, column=0, padx=10, pady=20)
 
 button_start_app = tk.Button(root, text="Start Skeleton.exe", command=lambda: on_button_click("start_app"), width=20)
 button_start_app.grid(row=1, column=1, padx=10, pady=10)
@@ -169,11 +179,12 @@ button_start_app.grid(row=1, column=1, padx=10, pady=10)
 button_kill_app = tk.Button(root, text="Stop Skeleton.exe", command=lambda: on_button_click("kill_app"), width=20)
 button_kill_app.grid(row=2, column=1, padx=10, pady=10)
 
-button_kill_app = tk.Button(root, text="Record", command=lambda: on_button_click("record"), width=20)
-button_kill_app.grid(row=1, column=3, padx=10, pady=10)
+button_record = tk.Button(root, text="Record", command=lambda: on_button_click("record"), width=20)
+button_record.grid(row=1, column=3, padx=10, pady=10)
 
 button_kill_app = tk.Button(root, text="Sync time", command=lambda: on_button_click("sync_time"), width=20)
 button_kill_app.grid(row=2, column=3, padx=10, pady=10)
+
 # button_sleep = tk.Button(root, text="Sleep All PCs", command=lambda: on_button_click("sleep"), width=30)
 # button_sleep.grid(row=1, column=2, padx=10, pady=10)
 
