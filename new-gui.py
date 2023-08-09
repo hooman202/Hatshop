@@ -3,7 +3,6 @@ from std_msgs.msg import String
 import tkinter as tk
 from PIL import Image, ImageTk
 
-
 class ImageGUI:
     def __init__(self, root):
         self.root = root
@@ -11,6 +10,7 @@ class ImageGUI:
 
         self.transparency = 20
         self.icon_size = 300
+        self.space_between_images = 20  # Adjust as needed
         
         # Initialize images
         self.image_list = [
@@ -28,20 +28,43 @@ class ImageGUI:
              [Image.open("social-awareness/images/hat.png"), 
              Image.open("social-awareness/images/hat-no.png")],
         ]
+
         
+
         # Create labels for images
         self.labels = []
         for i in range(len(self.image_list)):
             row_labels = []
             for j in range(len(self.image_list[i])):
                 label = tk.Label(root)
-                label.grid(row=i, column=j)
+                label.grid(row=(i*2), column=j, padx=0, pady=self.space_between_images)  # Add spacing here
+                # label.grid(row=i, column=j)
                 row_labels.append(label)
             self.labels.append(row_labels)
         
+        # self.show_images()
+        self.create_buttons()
         self.show_images()
 
         self.subscriber = rospy.Subscriber("string_topic", String, self.string_callback)
+
+
+    def create_buttons(self):
+        for i in range(len(self.image_list)):
+            for j in range(len(self.image_list[i])):
+                button = tk.Button(self.root, command=lambda cat=i, itm=j: self.on_button_click(cat, itm))
+                # button.grid(row=i, column=j)
+                # button.grid(row=len(self.image_list), column=j, padx=10, pady=10)  # Adjust padx and pady as needed
+                button.grid(row=(i*2)+1, column=j, padx=0, pady=1)
+
+                # img = self.image_list[i][j].resize((self.icon_size, self.icon_size), Image.LANCZOS)
+                # img.putalpha(self.transparency)
+                # photo = ImageTk.PhotoImage(img)
+                # button.config(image=photo)
+                # button.image = photo
+
+    def on_button_click(self, category, item):
+        self.update_images(category, item)
     
     def string_callback(self, msg):
         
@@ -65,7 +88,6 @@ class ImageGUI:
     def update_images(self, category, item):
         # for i in range(len(self.image_list)):
         for j in range(len(self.image_list[category])):
-
             img = self.image_list[category][j].copy()
 
             img = img.resize((self.icon_size, self.icon_size), Image.LANCZOS)
@@ -76,7 +98,9 @@ class ImageGUI:
                 # img.putalpha(int(255 * self.transparency))  # Set the overall transparency level
                 img.putalpha(self.transparency)
                 # img.putdata([(r, g, b, int(255 * self.transparency)) for r, g, b, _ in img.getdata()])
+
             photo = ImageTk.PhotoImage(img)
+
             self.labels[category][j].configure(image=photo)
             self.labels[category][j].image = photo
 
