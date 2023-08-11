@@ -9,24 +9,24 @@ class ImageGUI:
         self.root.title("Image GUI")
 
         self.transparency = 20
-        self.icon_size = 300
+        self.icon_size = 200
         self.space_between_images = 20  # Adjust as needed
         
         # Initialize images
         self.image_list = [
-            [Image.open("social-awareness/images/shape-0.png"), 
-             Image.open("social-awareness/images/shape-1.png"),
-             Image.open("social-awareness/images/shape-2.png")],
+            [Image.open("Social-awareness/images/shape-0.png"), 
+             Image.open("Social-awareness/images/shape-1.png"),
+             Image.open("Social-awareness/images/shape-2.png")],
 
-             [Image.open("social-awareness/images/status-single.png"), 
-             Image.open("social-awareness/images/status-married.png"),
-             Image.open("social-awareness/images/status-group3.png")],
+             [Image.open("Social-awareness/images/status-single.png"), 
+             Image.open("Social-awareness/images/status-married.png"),
+             Image.open("Social-awareness/images/status-group3.png")],
 
-             [Image.open("social-awareness/images/speed-slow.png"),
-             Image.open("social-awareness/images/speed-fast.png")],
+             [Image.open("Social-awareness/images/speed-slow.png"),
+             Image.open("Social-awareness/images/speed-fast.png")],
 
-             [Image.open("social-awareness/images/hat.png"), 
-             Image.open("social-awareness/images/hat-no.png")],
+             [Image.open("Social-awareness/images/hat.png"), 
+             Image.open("Social-awareness/images/hat-no.png")],
         ]
 
         
