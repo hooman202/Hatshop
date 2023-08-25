@@ -11,7 +11,7 @@ root.title("Tenchou - てんちょう ")
 broadcast_ip = '192.168.128.255'
 port = 12345
 
-kinect_server_mac = '10-6f-3f-0e-1d-3e'
+kinect_server_mac = 'd4-93-90-1b-6d-d1'
 
 mac_pc_dict = {
     'D4-93-90-20-92-D0': 'PC01',
@@ -21,11 +21,11 @@ mac_pc_dict = {
     'D4-93-90-21-78-63': 'PC05',
     'D4-93-90-21-78-3D': 'PC06',
     'D4-93-90-21-78-68': 'PC07',
-    # '00-00-00-00-00-05': 'PC08',
-    # 'D4-93-90-20-92-78': 'PC09',
-    # '00-00-00-00-00-10': 'PC10',
-    # '00-00-00-00-00-11': 'PC11',
-    # '00-00-00-00-00-06': 'PC12',
+    '00-00-00-00-00-08': 'PC08-Not',
+    'D4-93-90-20-92-78': 'PC09-Not',
+    '00-00-00-00-00-10': 'PC10-Not',
+    '00-00-00-00-00-11': 'PC11-Not',
+    'D4-93-90-21-77-FD': 'PC12',
     # '00-00-00-00-00-07': 'PC13',
     # '00-00-00-00-00-08': 'PC14'
 }
@@ -162,13 +162,13 @@ def update_boxes():
 update_boxes()
 
 button_turn_on = tk.Button(root, text="Turn on", command=lambda: on_button_click("turn_on"), width=12)
-button_turn_on.grid(row=1, column=0, padx=10, pady=10)
+button_turn_on.grid(row=1, column=0, padx=10, pady=5)
 
 button_turn_off = tk.Button(root, text="Turn off", command=lambda: on_button_click("turn_off"), width=12)
-button_turn_off.grid(row=2, column=0, padx=10, pady=10)
+button_turn_off.grid(row=2, column=0, padx=10, pady=5)
 
 button_restart = tk.Button(root, text="Restart", command=lambda: on_button_click("restart"), width=12)
-button_restart.grid(row=3, column=0, padx=10, pady=10)
+button_restart.grid(row=3, column=0, padx=10, pady=5)
 
 button_turn_on_server = tk.Button(root, text="Turn on Server", command=lambda: on_button_click("turn_on_server"), width=12)
 button_turn_on_server.grid(row=4, column=0, padx=10, pady=20)
